@@ -1,0 +1,23 @@
+# 编辑器 / 系统
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+*.swp
+
+# 构建与暂存（本地工具链，不发布）
+_build*.py
+_patch*.py
+_fix*.py
+_smoke*.js
+_verify*.py
+_check*.py
+_preview*.py
+_shots/
+_design/
+_edgeprofile/
+*final*test*
+*.bak
+
+# 本地测试产物
+XianThreshold.html.v*.bak
