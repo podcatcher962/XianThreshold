@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>四扇门 · XianThreshold</title>
+<meta name="description" content="四扇门 XianThreshold — 单文件本地自省工具。记下每日三次起心动念，把走过的路画成一张图，在你第 N 次走进同一条路时，轻轻说一句「又来了」。不联网、不上传、不诊断、不算命。">
+<meta name="theme-color" content="#14110E">
+<link rel="icon" href="data:,">
+<style>
+  :root{
+    --bg1:#1A1613; --bg2:#0E0C0A;
+    --tx:#E9E0D1; --tx2:#A79A86; --tx3:#6E6355;
+    --acc:#C0564A; --gold:#C9A227; --line:rgba(201,162,39,.20);
+    --m1:#3D4C54; --m2:#2E3B42; --m3:#212B31;
+    --moon:#F3E9D2; --halo:#C9A227; --seam:#E6C87E;
+    --btnTx:#120F0C;
+  }
+  @media (prefers-color-scheme:light){
+    :root{
+      --bg1:#F9F3E7; --bg2:#EFE5D2;
+      --tx:#2E2823; --tx2:#6E6355; --tx3:#9C9080;
+      --acc:#A93B30; --gold:#8C6E1B; --line:rgba(138,106,53,.24);
+      --m1:#C4CBCB; --m2:#D6DBDB; --m3:#E4E7E6;
+      --moon:#8A7A55; --halo:#B8914F; --seam:#B8914F;
+      --btnTx:#FBF6EC;
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;color:var(--tx);
+    background:radial-gradient(120% 70% at 50% 30%,var(--bg1) 0%,var(--bg2) 78%);
+    font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",serif;
+    display:flex;align-items:center;justify-content:center;padding:30px 20px;min-height:100%;
+  }
+  .box{width:100%;max-width:430px;text-align:center}
+  .art{display:block;width:100%;height:auto;margin:0 auto 6px}
+  h1{margin:0;font-size:2.15em;font-weight:500;letter-spacing:.34em;text-indent:.34em}
+  .sub{margin:10px 0 0;font-size:.78em;letter-spacing:.3em;color:var(--gold)}
+  .en{margin:8px 0 0;font-size:.72em;letter-spacing:.32em;color:var(--tx3)}
+  .rule{width:64px;height:1px;background:var(--line);margin:22px auto 0}
+  p.lead{margin:20px 0 0;color:var(--tx2);font-size:.93em}
+  blockquote{
+    margin:18px 0 0;padding:14px 16px;border-left:2px solid var(--acc);
+    background:rgba(192,86,74,.06);color:var(--tx);font-size:.9em;line-height:1.95;text-align:left;
+  }
+  a.go{
+    display:block;margin:24px 0 0;padding:16px 20px;border-radius:12px;text-decoration:none;
+    font-weight:600;font-size:1.04em;letter-spacing:.2em;color:var(--btnTx);
+    background:linear-gradient(135deg,var(--acc) 0%,var(--gold) 130%);
+    box-shadow:0 8px 26px rgba(192,86,74,.26);transition:transform .15s ease,box-shadow .15s ease;
+  }
+  a.go:hover{transform:translateY(-1px);box-shadow:0 12px 32px rgba(192,86,74,.34)}
+  .feats{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:22px 0 0}
+  .feats span{font-size:.78em;color:var(--tx2);border:1px solid var(--line);border-radius:999px;padding:4px 12px}
+  .sig{margin-top:28px;font-size:.76em;color:var(--tx3);letter-spacing:.04em;line-height:2}
+  a.link{color:var(--tx2);text-decoration:none;border-bottom:1px solid var(--line)}
+  a.link:hover{color:var(--gold)}
+</style>
+</head>
+<body>
+  <div class="box">
+    <svg class="art" viewBox="0 0 430 210" role="img" aria-label="素笺 · 一钩月 · 一痕远山 · 一线光">
+      <defs>
+        <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+          <stop offset="0"   stop-color="var(--halo)" stop-opacity=".34"/>
+          <stop offset="0.55" stop-color="var(--halo)" stop-opacity=".10"/>
+          <stop offset="1"   stop-color="var(--halo)" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="seam" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0"   stop-color="var(--seam)" stop-opacity="0"/>
+          <stop offset="0.5" stop-color="var(--seam)" stop-opacity=".85"/>
+          <stop offset="1"   stop-color="var(--seam)" stop-opacity="0"/>
+        </linearGradient>
+        <mask id="crescent">
+          <rect x="0" y="0" width="430" height="210" fill="#fff"/>
+          <circle cx="352" cy="52" r="17" fill="#000"/>
+        </mask>
+        <mask id="mntFade">
+          <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#fff" stop-opacity="1"/>
+            <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+          </linearGradient>
+          <rect x="0" y="132" width="430" height="78" fill="url(#fade)"/>
+        </mask>
+      </defs>
+
+      <!-- 月晕 -->
+      <circle cx="348" cy="56" r="58" fill="url(#halo)"/>
+      <!-- 一钩月（遮罩剪出月牙）-->
+      <circle cx="348" cy="56" r="20" fill="var(--moon)" opacity=".92" mask="url(#crescent)"/>
+
+      <!-- 疏星 -->
+      <g fill="var(--moon)" opacity=".55">
+        <circle cx="62"  cy="44"  r="1.5"/>
+        <circle cx="124" cy="26"  r="1.1"/>
+        <circle cx="186" cy="58"  r="1.3"/>
+        <circle cx="252" cy="32"  r="1"/>
+        <circle cx="96"  cy="82"  r="1"/>
+        <circle cx="216" cy="94"  r="1.2"/>
+      </g>
+
+      <!-- 一痕远山：三层，山脚化开 -->
+      <g mask="url(#mntFade)">
+        <path d="M0 146 C 48 138, 84 152, 128 144 C 172 136, 206 156, 250 146 C 292 137, 330 152, 372 142 C 400 136, 418 146, 430 141 L430 210 L0 210 Z" fill="var(--m1)" opacity=".40"/>
+        <path d="M0 164 C 56 154, 96 170, 142 160 C 188 150, 224 170, 270 160 C 314 151, 352 166, 394 156 C 412 152, 422 160, 430 156 L430 210 L0 210 Z" fill="var(--m2)" opacity=".50"/>
+        <path d="M0 182 C 60 172, 104 188, 152 178 C 200 168, 238 188, 286 178 C 330 169, 366 184, 406 174 C 420 171, 426 177, 430 175 L430 210 L0 210 Z" fill="var(--m3)" opacity=".60"/>
+      </g>
+
+      <!-- 一线光：门槛的意象化 -->
+      <ellipse cx="215" cy="203" rx="150" ry="8" fill="url(#seam)" opacity=".28"/>
+      <ellipse cx="215" cy="203" rx="104" ry="1.6" fill="url(#seam)"/>
+
+      <!-- 朱砂印 -->
+      <g>
+        <rect x="386" y="176" width="26" height="26" rx="3" fill="#B7352B" opacity=".92"/>
+        <text x="399" y="190" fill="#F6EEDD" font-size="15" text-anchor="middle" dominant-baseline="central" font-family="Georgia,serif">四</text>
+      </g>
+    </svg>
+
+    <h1>四 扇 门</h1>
+    <p class="sub">种 因 · 觉 照</p>
+    <p class="en">XIAN THRESHOLD</p>
+    <div class="rule"></div>
+
+    <p class="lead">它不预测、不诊断、不算命。只是把你走过的路画成一张图，在你又一次走到同一道门前时，把灯留着。</p>
+
+    <blockquote>业不是罚你。<br>是你以前学来的生存方式，到现在还在自动运行。</blockquote>
+
+    <a class="go" href="./web/XianThreshold.html">入内 · Enter</a>
+
+    <div class="feats">
+      <span>每日三节</span>
+      <span>业力图谱</span>
+      <span>替代动作</span>
+      <span>东西对读</span>
+      <span>静室</span>
+      <span>中英双语</span>
+    </div>
+
+    <p class="sig">
+      © 永远的兰兰 · Lanlan Eternal &nbsp;|&nbsp;
+      <a class="link" href="https://github.com/podcatcher962/XianThreshold">GitHub</a><br>
+      单文件 HTML · 零依赖 · 零联网 · 数据只留本机
+    </p>
+
+    <div id="busuanzi_container_page_pv" style="text-align:center;font-size:12px;color:#888;margin:18px 0 10px;display:none">👁 本页访问 <span id="busuanzi_value_page_pv"></span> 次<span id="busuanzi_container_site_uv"> · 访客 <span id="busuanzi_value_site_uv"></span> 人</span></div>
+  </div>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</body>
+</html>
