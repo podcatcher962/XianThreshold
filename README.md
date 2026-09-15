@@ -34,22 +34,38 @@
 
 | 分类 | 说明 |
 | --- | --- |
-| 🌅 **今日** | 晨 / 午 / 夜三节，各一次起心动念记录；当天水墨题图随日期生成 |
-| 📖 **随览** | 只读浏览：民俗条目、东西对读、条目问答 —— **不出题、不打分**，翻到哪算哪 |
+| 🌅 **今日** | 晨 / 午 / 夜三节，各一次起心动念记录；当天水墨题图随日期生成。夜间记「什么时候看见的」——**不打分** |
+| 📖 **随览** | 只读浏览，五类轮换：东西对读 / 民俗条目 / 全幅墨景 / **业力三看** / **旧书一句** —— **不出题、不打分**，翻到哪算哪 |
 | ✍️ **录事** | 记下日常小事与身体小异动，自动与民俗词表对照 |
 | 🗺 **显影** | 业力图谱：把走过的路画成一张图，灰的是没走过的路 |
-| 🪞 **自照** | 十六题自省问卷 → 一张「业力画像」；只描述模式，不贴标签 |
+| 🪞 **自照** | 八题自省问卷 → 一张「业力画像」；只描述模式，不贴标签 |
 | 🕯 **静室** | 呼吸涟漪，只有缓慢的起伏，没有计时、没有打卡 |
 | 📚 **案头** | 说明、常见问题、免责、关于、作者与授权 |
+| 🎐 **配乐** | 本地完整版带一首可开关的背景乐（琴箫），默认关；在线版不含音频 |
 | 🌗 **主题** | 深色 / 浅色双主题，随系统自动切换 |
-| 🌐 **语言** | 简体中文 / English 全量双语（约 330 条 UI 文案） |
+| 🌐 **语言** | 简体中文 / English 全量双语（357 条 UI 文案，中英各一份） |
 
 内置内容规模（均为本地数据，无网络请求）：
 
-- **民俗知识库 约 150 条**（节气、物候、民俗兆应等）
-- **东西对读 约 150 条**（同一处境下的东方与西方视角并置）
-- **自照问卷 16 题**、**自问 24 条**、**替代动作 12 组**
-- **常见问题 12 条**
+- **民俗知识库 80 条**（节气、物候、民俗兆应等）
+- **东西对读 32 条**（同一处境下的东方与西方视角并置）
+- **业力三看 6 组**（一件事，三种读法并排：遍计所执 / 依他起 / 圆成实）
+- **旧书一句 10 条**（唯识典籍原句 + 出处 + 一句人话）
+- **自照问卷 8 题**、**自问 36 条**、**替代动作 12 组**、**静后语 12 句**
+- **常见问题 14 条**
+
+### 关于「业力三看」与「旧书一句」
+
+随览里这两类是 v1.1 新加的，来自一次很实在的困惑：**一件事发生了，我看到的到底是那件事，还是我替它编的意义？**
+
+- **三看**把同一件事并排摆成三层——`遍计所执`（我贴上去的意义）／`依他起`（条件凑成的这件事）／`圆成实`（它本来的样子）。不要求你选一层，也不给答案，只让你看见「三层是同时存在的」。
+- **旧书一句**从《成唯识论》《大乘成业论》这类书里挑一句，配上出处和一句人话。**不劝你信**，也不劝你不信；它讲的是模式怎么长出来、又怎么松掉。
+
+这两类都**不出题、不打分、不写盘**。
+
+### 关于配乐
+
+下载下来的完整版本带一首背景乐（顶栏「乐」字按钮，点一下开始、再点一下停），放在同目录的 `music/` 文件夹里，**不随公开仓库分发**——所以在线版没有声音，设置里也不会出现那一栏。曲目是本地附件，整页依然**零网络请求**。
 
 ### 使用说明
 
@@ -117,22 +133,38 @@ It does not predict, diagnose, or divine. It does exactly three things:
 
 | Area | What you get |
 | --- | --- |
-| 🌅 **Today** | Three moments a day (morning / noon / night); the day's ink illustration is generated from the date |
-| 📖 **Wander** | Read-only browsing: folk-lore entries, East–West pairings, Q&A — **no questions, no scoring** |
+| 🌅 **Today** | Three moments a day (morning / noon / night); the day's ink illustration is generated from the date. At night you note *when* you saw it — **no score** |
+| 📖 **Wander** | Read-only, five rotating kinds: East–West pairings / folk-lore entries / a full ink scene / **three readings of one event** / **a line from the old books** — **no questions, no scoring** |
 | ✍️ **Record** | Log small events and bodily oddities; matched against a folk-omen word list |
 | 🗺 **Map** | The map of your roads — grey where you have never walked |
-| 🪞 **Mirror** | A 16-question self-inventory → a "portrait" that describes patterns without labelling you |
+| 🪞 **Mirror** | An 8-question self-inventory → a "portrait" that describes patterns without labelling you |
 | 🕯 **Stillness** | Breathing ripples only — no timer, no streaks, no check-ins |
 | 📚 **Docs** | Help, FAQ, disclaimer, about, author & licence |
+| 🎐 **Music** | The full local build carries one toggleable ambient track (qin & xiao), off by default; the online build ships no audio |
 | 🌗 **Theme** | Dark / light, follows the system |
-| 🌐 **Language** | Full Simplified Chinese / English (≈330 UI strings) |
+| 🌐 **Language** | Full Simplified Chinese / English (357 UI strings, one set each) |
 
 Built-in content (all local, zero network requests):
 
-- **~150 folk-lore entries** (solar terms, phenology, traditional omens)
-- **~150 East–West readings** (the same predicament seen from two traditions)
-- **16 self-inventory questions**, **24 self-inquiries**, **12 alternative-action sets**
-- **12 FAQ entries**
+- **80 folk-lore entries** (solar terms, phenology, traditional omens)
+- **32 East–West readings** (the same predicament seen from two traditions)
+- **6 sets of "three readings"** (one event, three ways of reading it side by side: the meaning you pasted on / the conditions that made it / what it simply was)
+- **10 lines from the old books** (a citation, its source, and one plain sentence)
+- **8 self-inventory questions**, **36 self-inquiries**, **12 alternative-action sets**, **12 idle verses**
+- **14 FAQ entries**
+
+### On "three readings" and "a line from the old books"
+
+Both arrived in v1.1 from one plain confusion: **when something happens, am I seeing the event, or the meaning I pasted onto it?**
+
+- **Three readings** lays one event out in three layers — the meaning you pasted on, the conditions that assembled it, and what it simply is. You are not asked to pick a layer, and no answer is given; you only get to see that all three are true at once.
+- **A line from the old books** picks one sentence from texts such as the *Cheng Weishi Lun*, with its source and one plain-language gloss. It **does not ask you to believe** — or to disbelieve. It describes how a pattern grows and how it comes loose.
+
+Neither kind asks questions, scores you, or writes anything to storage.
+
+### On the music
+
+The downloaded full build carries one ambient track (the 「乐」 button in the top bar: tap to start, tap again to stop). It lives in a `music/` folder next to the file and is **not distributed with the public repository** — so the online build has no sound and the settings entry does not appear. The track is a local attachment; the page still makes **zero network requests**.
 
 ### Usage
 
