@@ -267,6 +267,11 @@ html[lang="en"] .sp .zh{font-size:1.7rem;letter-spacing:.16em;text-indent:.16em}
 /* ===== 静室入口按钮（顶栏） ===== */
 .ic.dot{position:relative}
 .ic.dot::after{content:'';position:absolute;top:5px;right:6px;width:5px;height:5px;border-radius:50%;background:var(--acc2)}
+.ic.mus.on{border-color:var(--acc2);color:var(--acc2)}
+.oldq{border-left:2px solid var(--acc);padding-left:15px;margin:14px 0 0}
+.oldqt{font-size:.9375rem;line-height:2.05;color:var(--tx);letter-spacing:.03em}
+.oldqs{font-size:.75rem;color:var(--tx3);margin-top:8px;letter-spacing:.06em}
+.oldpw{margin-top:13px;font-size:.875rem;line-height:1.9;color:var(--tx2)}
 html[data-motion="low"] .breathe .core{transition:none!important}
 
 /* ================= v0.4 点选层样式（承接 v0.3 沉静层） ================= */
@@ -385,6 +390,7 @@ html[data-motion="low"] .breathe .ripple{animation:none}
 <body>
 <svg class="paper" aria-hidden="true"><defs><filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.82" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter></defs><rect width="100%" height="100%" filter="url(#grain)" opacity="0.22"/></svg>
 <div id="splash" class="gone"></div>
+<audio id="bgm" loop preload="none"></audio>
 <div class="wrap">
   <header>
     <div class="brand" data-act="go" data-v="today">
@@ -392,7 +398,7 @@ html[data-motion="low"] .breathe .ripple{animation:none}
       <div><h1 id="brandName">四扇门</h1><p id="brandSub"></p></div>
     </div>
     <div class="hb">
-      <button class="ic dot" data-act="go" data-v="still" title="Still Room">静</button><button class="ic" data-act="cycleLang" id="btnLang">EN</button>
+      <button class="ic dot" data-act="go" data-v="still" title="Still Room">静</button><button class="ic mus" data-act="toggleMusic" id="btnMusic" style="display:none" title="Music">乐</button><button class="ic" data-act="cycleLang" id="btnLang">EN</button>
       <button class="ic" data-act="cycleTheme" id="btnTheme">◐</button>
     </div>
   </header>
@@ -401,7 +407,7 @@ html[data-motion="low"] .breathe .ripple{animation:none}
   <footer><span id="footSig"></span></footer>
 </div>
 <script>
-var APP={key:'fourdoors_v1',ver:'1.0',en:'XianThreshold',seal:{zh:'四',en:'四'}};
+var APP={key:'fourdoors_v1',ver:'1.1',en:'XianThreshold',seal:{zh:'四',en:'四'}};
 
 function esc(s){
   return String(s==null?'':s)
@@ -498,7 +504,7 @@ var SLOTS=[
   {k:'midday',label:{zh:'午',en:'Noon'},q:{zh:'此刻我在起什么心？',en:'What is moving in me right now?'},
    hint:{zh:'选一到两个词。不评判好坏。',en:'Choose one or two words. No judging.'}},
   {k:'night',label:{zh:'夜',en:'PM'},q:{zh:'今天我种了什么？',en:'What did I plant today?'},
-   hint:{zh:'写一句就够。然后给自己今天打一个「觉知度」。',en:'One sentence is enough. Then rate your awareness for today.'}}
+   hint:{zh:'选一个今天在转的，再选一个「什么时候看见的」。不必写字。',en:'Pick what was turning today, then pick when you saw it. No writing needed.'}}
 ];
 function O(k,t,folk,mind,life,act){return {k:k,t:t,folk:folk,mind:mind,life:life,act:act};}
 var OMEN_DB=[
@@ -616,10 +622,10 @@ I18N.zh={
  'flash.ph':'写一句，或留空','flash.save':'记下','flash.saved':'已记：',
  'aware.title':'觉知密度','aware.tag':'近 30 天',
  'aware.lead':'这里不记连续天数。断了就断了，不会有任何提示——因为断签惩罚本身就是一种旧模式。',
- 'aware.days':'记录天数 / 30','aware.avg':'觉知度均值','aware.ev':'记下的现场','aware.om':'巧合记录',
- 'aware.trend':'觉知度 · 近 14 天','aware.trendsub':'不是成绩单。只是在看它有没有在长。',
+ 'aware.days':'记录天数 / 30','aware.when':'多半在何时看见','aware.ev':'记下的现场','aware.om':'巧合记录',
+ 'aware.trend':'看见的时机 · 近 14 天','aware.trendsub':'不是成绩单。只是看看你看见得早一点了没有。',
  'slot.save':'存下','slot.close':'收起','slot.aw':'今日觉知度','slot.awh':'不是打分，是「今天有多少时候我是醒着的」',
- 'slot.ph':'一句就够。写「今天忍住了没冷战」比写「今天很糟」有用。','slot.multi':'选一到两个。多选也行，不拦你。',
+ 'slot.ph':'想写一句就写。不写也行。','slot.multi':'选一到两个。多选也行，不拦你。',
  'rec.omen':'巧合日志','rec.omenlead':'掉筷、梦象、身体的小异动——写下来，它会被放回四条轨道上。四条并列，不合并、不评分、不给结论。',
  'rec.omenph':'今天发生了：例如「筷子掉地上了」','rec.omenbtn':'看四条轨道',
  'rec.omennote':'匹配不到也会有话说——多数事本来就该归于「无解」。',
@@ -720,10 +726,10 @@ I18N.en={
  'flash.ph':'One line, or leave it blank','flash.save':'Keep it','flash.saved':'Kept: ',
  'aware.title':'Awareness density','aware.tag':'last 30 days',
  'aware.lead':'No streaks here. Miss a day and nothing happens, because punishing a missed day is itself an old pattern.',
- 'aware.days':'days recorded / 30','aware.avg':'avg awareness','aware.ev':'scenes recorded','aware.om':'omens noted',
- 'aware.trend':'Awareness · last 14 days','aware.trendsub':'Not a report card. Just seeing whether it is growing.',
+ 'aware.days':'days recorded / 30','aware.when':'mostly seen','aware.ev':'scenes recorded','aware.om':'omens noted',
+ 'aware.trend':'When you saw it · last 14 days','aware.trendsub':'Not a report card. Only whether you are seeing it a little earlier.',
  'slot.save':'Save','slot.close':'Close','slot.aw':'Awareness today','slot.awh':'Not a score: how much of today were you actually awake?',
- 'slot.ph':'One sentence is enough. I did not freeze them out beats today was bad.','slot.multi':'One or two. Or more, nothing is stopping you.',
+ 'slot.ph':'Write a line if you want. Skipping is fine too.','slot.multi':'One or two. Or more, nothing is stopping you.',
  'rec.omen':'Omens and coincidences','rec.omenlead':'Dropped chopsticks, dreams, small oddities of the body. Write it down and it is placed on four tracks: side by side, never merged, never scored, never concluded.',
  'rec.omenph':'What happened, e.g. chopsticks fell','rec.omenbtn':'Show the four tracks',
  'rec.omennote':'Even no match has something to say; most things belong to no answer.',
@@ -1225,7 +1231,8 @@ D({zh:'慧能 · 六祖坛经',en:'Huineng, Platform Sutra'},
 })();
 
 var view='today';
-var ui={panel:null,quizIdx:0,quizAns:{},node:null,nodeType:'t',omenId:null,mapWin:'all',doc:'help'};
+var ui={panel:null,quizIdx:0,quizAns:{},node:null,nodeType:'t',omenId:null,mapWin:'all',doc:'help',
+  musicOK:false,musicProbe:null,musicTap:false};
 
 function trTerm(s){
   var i;
@@ -1301,6 +1308,28 @@ function viewToday(){
   h+=statCard();
   return h;
 }
+/* v1.1：晚安时记「什么时候看见的」，不再打 0–10 的分。
+   分数会变成要追的东西，那就又成了考试。
+   老记录里存的还是数字，这里做一次映射，不迁移、不清空。 */
+function whenOf(rec){
+  if(!rec)return null;
+  if(rec.when)return rec.when;
+  if(typeof rec.awareness==='number'){
+    if(rec.awareness>=9)return 'pre';
+    if(rec.awareness>=7)return 'during';
+    if(rec.awareness>=4)return 'after';
+    return 'none';
+  }
+  return null;
+}
+var WHEN_LV={pre:4,during:3,after:2,none:1};
+function whenMost(){
+  var c={pre:0,during:0,after:0,none:0},k,n=0,i,best=null;
+  for(i=0;i<S.seeds.length;i++){k=whenOf(S.seeds[i]);if(k){c[k]++;n++;}}
+  if(!n)return null;
+  for(k in c)if(best===null||c[k]>c[best])best=k;
+  return {k:best,n:n,c:c};
+}
 function slotPanel(rec,k){
   var s=null,i;
   for(i=0;i<SLOTS.length;i++)if(SLOTS[i].k===k)s=SLOTS[i];
@@ -1319,21 +1348,26 @@ function slotPanel(rec,k){
     }
     h+='</div><div class="muted">'+esc(L('slot.multi'))+'</div>';
   }else{
-    h+='<textarea id="nightTxt" rows="3" placeholder="'+esc(L('slot.ph'))+'">'+esc(rec.night||'')+'</textarea>'+
-       '<div class="muted" style="margin-top:14px">'+esc(L('slot.aw'))+'</div>'+
-       '<input type="range" min="0" max="10" step="1" id="awareR" value="'+(rec.awareness==null?5:rec.awareness)+'" oninput="var e=document.getElementById(\'awareV\');if(e)e.textContent=this.value">'+
-       '<div class="row" style="justify-content:space-between"><span class="muted">'+esc(L('slot.awh'))+
-       '</span><span id="awareV" style="color:var(--acc2);font-family:Georgia,serif;font-size:1.125rem">'+(rec.awareness==null?5:rec.awareness)+'</span></div>';
+    h+='<div class="flab">'+esc(L('slot.what'))+'</div><div class="chips">';
+    for(i=0;i<TERMS.zh[0].length;i++)
+      h+='<button class="chip'+((rec.night||'')===TERMS.zh[0][i]?' on':'')+'" data-act="pickNight" data-v="'+esc(TERMS.zh[0][i])+'">'+
+         esc(T({zh:TERMS.zh[0][i],en:TERMS.en[0][i]}))+'</button>';
+    h+='</div>';
+    h+='<div class="flab" style="margin-top:16px">'+esc(L('slot.when'))+'</div><div class="chips">';
+    var WK=['pre','during','after','none'];
+    for(i=0;i<WK.length;i++)
+      h+='<button class="chip'+(whenOf(rec)===WK[i]?' on':'')+'" data-act="pickWhen" data-v="'+WK[i]+'">'+esc(L('slot.w.'+WK[i]))+'</button>';
+    h+='</div><div class="qknote">'+esc(L('slot.whenhint'))+'</div>'+
+       '<textarea data-save="night" rows="2" placeholder="'+esc(L('slot.ph'))+'">'+esc(rec.nightNote||'')+'</textarea>';
   }
-  h+='<div class="row" style="margin-top:14px"><button class="btn sm" data-act="saveSlot" data-k="'+k+'">'+esc(L('slot.save'))+'</button>'+
+  h+='<div class="row" style="margin-top:14px">'+
+     (k==='night'?'':'<button class="btn sm" data-act="saveSlot" data-k="'+k+'">'+esc(L('slot.save'))+'</button>')+
      '<button class="btn sm ghost" data-act="closeSlot">'+esc(L('slot.close'))+'</button></div></div>';
   return h;
 }
 function statCard(){
   var e=S.events.length,o=S.omens.length;
-  var aw=0,cnt=0,i;
-  for(i=0;i<S.seeds.length;i++)if(S.seeds[i].awareness!=null){aw+=S.seeds[i].awareness;cnt++;}
-  var avg=cnt?Math.round(aw/cnt*10)/10:0;
+  var wz=whenMost(),i;
   var d30=0,t=Date.now()-30*86400000;
   for(i=0;i<S.seeds.length;i++){
     var any=S.seeds[i].morning||(S.seeds[i].midday&&S.seeds[i].midday.length)||S.seeds[i].night;
@@ -1342,7 +1376,7 @@ function statCard(){
   return '<div class="card"><h2>'+esc(L('aware.title'))+' <span class="tag">'+esc(L('aware.tag'))+'</span></h2>'+
     '<div class="sub">'+esc(L('aware.lead'))+'</div><div class="stat">'+
     '<div class="si"><div class="sv">'+d30+'</div><div class="sk">'+esc(L('aware.days'))+'</div></div>'+
-    '<div class="si"><div class="sv">'+(avg||'—')+'</div><div class="sk">'+esc(L('aware.avg'))+'</div></div>'+
+    '<div class="si"><div class="sv">'+(wz?esc(L('slot.w.'+wz.k)):'—')+'</div><div class="sk">'+esc(L('aware.when'))+'</div></div>'+
     '<div class="si"><div class="sv">'+e+'</div><div class="sk">'+esc(L('aware.ev'))+'</div></div>'+
     '<div class="si"><div class="sv">'+o+'</div><div class="sk">'+esc(L('aware.om'))+'</div></div>'+
     '</div>'+trendHTML()+'</div>';
@@ -1351,7 +1385,9 @@ function trendHTML(){
   var days=[],any=false,i,j;
   for(i=13;i>=0;i--){
     var ts=Date.now()-i*86400000,key=dayKey(ts),v=null;
-    for(j=0;j<S.seeds.length;j++)if(S.seeds[j].date===key&&S.seeds[j].awareness!=null)v=S.seeds[j].awareness;
+    var wk=null;
+    for(j=0;j<S.seeds.length;j++)if(S.seeds[j].date===key)wk=whenOf(S.seeds[j])||wk;
+    var v=wk?WHEN_LV[wk]:null;
     if(v!=null)any=true;
     days.push({v:v,d:new Date(ts).getDate()});
   }
@@ -1359,7 +1395,7 @@ function trendHTML(){
   var h='<div class="divider"></div><div class="muted">'+esc(L('aware.trend'))+'</div>'+
         '<div class="muted" style="font-size:.75rem;margin-top:2px">'+esc(L('aware.trendsub'))+'</div><div class="trend">';
   for(var m=0;m<days.length;m++){
-    var d=days[m],pct=d.v==null?3:Math.max(6,d.v*10);
+    var d=days[m],pct=d.v==null?3:(14+d.v*20);
     h+='<div class="b"><div class="bar'+(d.v==null?' e':'')+'" style="height:'+pct+'%"></div><div class="lb">'+d.d+'</div></div>';
   }
   return h+'</div>';
@@ -1722,7 +1758,7 @@ function docBody(id){
     for(i=1;i<=6;i++)h+='<div class="qa"><div class="qq">'+esc(L('help.'+i))+'</div><div class="aa">'+esc(L('help.'+i+'b'))+'</div></div>';
   }else if(id==='faq'){
     h+='<div class="wlist" style="border:none">';
-    for(i=1;i<=12;i++)h+='<div class="qa"><div class="qq">'+esc(L('faq.'+i))+'</div><div class="aa">'+esc(L('faq.'+i+'b'))+'</div></div>';
+    for(i=1;i<=14;i++)h+='<div class="qa"><div class="qq">'+esc(L('faq.'+i))+'</div><div class="aa">'+esc(L('faq.'+i+'b'))+'</div></div>';
     h+='</div>';
   }else if(id==='tos'){
     h+='<div class="tos">';
@@ -1788,6 +1824,14 @@ function viewSet(){
     '<div class="chips"><button class="chip'+(S.stillOn?' on':'')+'" data-act="setStill" data-v="on">'+esc(L('set.stillon'))+'</button>'+
     '<button class="chip'+(!S.stillOn?' on':'')+'" data-act="setStill" data-v="off">'+esc(L('set.stilloff'))+'</button></div></div>';
 
+  /* v1.1 配乐：本地附件。没有音频文件就不显示这一栏（在线版即如此）。 */
+  if(ui.musicOK){
+    h+='<div class="card"><h2>'+esc(L('set.music'))+'</h2><div class="sub">'+esc(L('set.musiclead'))+'</div><div class="chips">'+
+      '<button class="chip'+(!S.musicOn?' on':'')+'" data-act="setMusic" data-v="off">'+esc(L('set.musicoff'))+'</button>';
+    for(i=0;i<MUSIC.length;i++)
+      h+='<button class="chip'+((S.musicOn&&S.musicTrack===MUSIC[i][0])?' on':'')+'" data-act="setMusic" data-v="'+MUSIC[i][0]+'">'+esc(L('music.'+MUSIC[i][0]))+'</button>';
+    h+='</div><div class="qknote" style="margin-top:12px">'+esc(L('set.musicnote'))+'</div></div>';
+  }
   h+='<div class="card"><h2>'+esc(L('set.doc'))+'</h2><div class="sub">'+esc(L('set.doclead'))+'</div>'+
     '<div class="docnav">';
   var docs=['help','faq','tos','about','author'];
@@ -1883,6 +1927,8 @@ function handle(act,el){
   if(act==='replaySplash'){showSplash();return;}
   if(act==='openSlot'){ui.panel=(ui.panel===k?null:k);render();return;}
   if(act==='closeSlot'){ui.panel=null;render();return;}
+  if(act==='pickNight'){var rn=todaySeed();rn.night=(rn.night===v?'':v);save();render();return;}
+  if(act==='pickWhen'){var rw=todaySeed();rw.when=(rw.when===v?null:v);save();render();return;}
   if(act==='pick'||act==='pickMulti'){
     var rec=todaySeed();
     if(act==='pick')rec.morning=(rec.morning===v?null:v);
@@ -1896,9 +1942,8 @@ function handle(act,el){
   if(act==='saveSlot'){
     var rec2=todaySeed();
     if(k==='night'){
-      var t=document.getElementById('nightTxt'),r=document.getElementById('awareR');
-      rec2.night=t?String(t.value||'').trim():'';
-      rec2.awareness=r?parseInt(r.value,10):null;
+      var t=document.getElementById('nightTxt');
+      if(t)rec2.nightNote=String(t.value||'').trim();
     }
     save();ui.panel=null;render();return;
   }
@@ -2023,6 +2068,15 @@ function handle(act,el){
 }
 function boot(){
   load();
+  /* v1.1 老数据兼容：以前写在「夜」框里的自由文本，挪到 nightNote 保存下来 */
+  (function(){
+    var i,j,ch=false;
+    for(i=0;i<S.seeds.length;i++){
+      var r=S.seeds[i];
+      if(r&&r.night&&r.nightNote==null&&TERMS.zh[0].indexOf(r.night)<0){r.nightNote=r.night;r.night='';ch=true;}
+    }
+    if(ch)save();
+  })();
   try{
     if(typeof window!=='undefined'&&window.matchMedia){
       var mq=window.matchMedia('(prefers-color-scheme: dark)');
@@ -2038,11 +2092,72 @@ function boot(){
   });
   var fi=document.getElementById('fileIn');
   if(fi)fi.addEventListener('change',handleFile);
+  /* 夜话那行可选的字：失焦即存，没有保存按钮 */
+  document.addEventListener('change',function(ev){
+    var t=ev&&ev.target;
+    if(t&&t.getAttribute&&t.getAttribute('data-save')==='night'){
+      var r=todaySeed();r.nightNote=String(t.value||'').trim();save();
+    }
+  });
   applyTheme();
   applyLang();
   render();
-  if(S.splashMode==='every'||!S.seen)showSplash();
+  /* v1.1：从落地页（那张深色海报）点「入内」进来时带 ?in=1，
+     此时不再出第二张海报——两页海报都要点「入内」，是重复的。
+     URL 上的一次性标记用 replaceState 抹掉，直接刷新时开屏照常。 */
+  var cameIn=false;
+  try{
+    if(typeof location!=='undefined'&&String(location.search||'').indexOf('in=1')>=0){
+      cameIn=true;
+      if(typeof history!=='undefined'&&history.replaceState)history.replaceState(null,'',location.pathname+location.hash);
+    }
+  }catch(e){}
+  musicBoot();
+  if(!cameIn&&(S.splashMode==='every'||!S.seen))showSplash();
 }
+/* ================= v1.1 配乐 =================
+   配乐是本地附件（music/ 目录），不上仓库、不上线。
+   探不到音频文件时，按钮与设置栏目一起隐藏——在线版就是没有这一栏。
+   MUSIC = [曲名, 音量]；音量按各自的实测响度调过，换曲子只改这张表。 */
+var MUSIC=[['qinxiao',0.50],['guqin',1.00],['stream',1.00]];
+function musicFile(id){return 'music/'+id+'.mp3';}
+function musicVol(id){for(var i=0;i<MUSIC.length;i++)if(MUSIC[i][0]===id)return MUSIC[i][1];return 0.5;}
+function musicEl(){return document.getElementById('bgm');}
+/* 探一次「有没有音频文件」。只预载 metadata，代价是一个很短的请求。 */
+function musicProbe(){
+  if(ui.musicProbe!=null){ui.musicOK=ui.musicProbe;return;}
+  ui.musicProbe=false;ui.musicOK=false;
+  try{
+    var a=new Audio();
+    a.preload='metadata';
+    a.addEventListener('loadedmetadata',function(){ui.musicProbe=true;ui.musicOK=true;render();});
+    a.addEventListener('error',function(){ui.musicProbe=false;ui.musicOK=false;render();});
+    a.src=musicFile(S.musicTrack||MUSIC[0][0]);
+  }catch(e){}
+}
+function musicSync(){
+  var el=musicEl();if(!el)return;
+  ui.musicTap=false;
+  try{
+    if(!S.musicOn||!S.musicTrack){el.pause();return;}
+    var src=musicFile(S.musicTrack);
+    if(el.getAttribute('src')!==src)el.setAttribute('src',src);
+    el.volume=musicVol(S.musicTrack);
+    var p=el.play();
+    if(p&&p.then)p.then(function(){},function(){ui.musicTap=true;});
+  }catch(e){ui.musicTap=true;}
+}
+function musicToggle(){
+  if(!S.musicTrack)S.musicTrack=MUSIC[0][0];
+  S.musicOn=!S.musicOn;save();musicSync();render();
+}
+function musicBoot(){
+  musicProbe();
+  if(S.musicOn)musicSync();
+  /* 浏览器会拦住「没点过就自动播」。第一次点页面时补上，不弹窗、不提示。 */
+  document.addEventListener('click',function(){if(ui.musicTap&&S.musicOn)musicSync();},true);
+}
+
 /* ================= v0.3 补丁：开屏海报 / 静室 / 对读 ================= */
 var stillTimer=null;
 
@@ -2394,6 +2509,8 @@ function render(){
   var bs=document.getElementById('brandSub');if(bs)bs.textContent=L('app.en');
   var se=document.getElementById('seal');if(se)se.textContent=T(APP.seal);
   var fs=document.getElementById('footSig');if(fs)fs.innerHTML=esc(L('foot.sig'))+'<br>'+esc(L('foot.note'));
+  var bm=document.getElementById('btnMusic');
+  if(bm){bm.style.display=(ui.musicOK?'':'none');bm.className='ic mus'+(S.musicOn?' on':'');}
   applyTheme();applyLang();
 }
 function go(v){
@@ -2412,8 +2529,10 @@ function handle(act,el){
   if(act==='stillStop'){stillStop();return;}
   if(act==='setStill'){S.stillOn=(v==='on');save();render();return;}
   if(act==='setSplashMode'){S.splashMode=(v==='once'?'once':'every');save();render();return;}
+  if(act==='toggleMusic'){musicToggle();return;}
+  if(act==='setMusic'){S.musicTrack=v;S.musicOn=(v!=='off');save();musicSync();render();return;}
   if(act==='brNext'){ui.brSeed=Math.floor(Math.random()*99999);if(ui.brK==null)ui.brK=0;render();return;}
-  if(act==='brKind'){ui.brK=((ui.brK==null?0:ui.brK)+1)%3;ui.brSeed=Math.floor(Math.random()*99999);render();return;}
+  if(act==='brKind'){ui.brK=((ui.brK==null?0:ui.brK)+1)%5;ui.brSeed=Math.floor(Math.random()*99999);render();return;}
   if(act==='duiNext'){ui.duiIdx=((ui.duiIdx||0)+1+Math.floor(Math.random()*(DUIDU.length-1)))%DUIDU.length;render();return;}
   if(act==='duiAll'){ui.duiAll=!ui.duiAll;render();return;}
   if(act==='duiOne'){ui.duiAll=false;render();return;}
@@ -2433,6 +2552,8 @@ function handle(act,el){
   if(act==='replaySplash'){showSplash();return;}
   if(act==='openSlot'){ui.panel=(ui.panel===k?null:k);render();return;}
   if(act==='closeSlot'){ui.panel=null;render();return;}
+  if(act==='pickNight'){var rn=todaySeed();rn.night=(rn.night===v?'':v);save();render();return;}
+  if(act==='pickWhen'){var rw=todaySeed();rw.when=(rw.when===v?null:v);save();render();return;}
   if(act==='pick'||act==='pickMulti'){
     var rec=todaySeed();
     if(act==='pick')rec.morning=(rec.morning===v?null:v);
@@ -2446,9 +2567,8 @@ function handle(act,el){
   if(act==='saveSlot'){
     var rec2=todaySeed();
     if(k==='night'){
-      var t=document.getElementById('nightTxt'),r=document.getElementById('awareR');
-      rec2.night=t?String(t.value||'').trim():'';
-      rec2.awareness=r?parseInt(r.value,10):null;
+      var t=document.getElementById('nightTxt');
+      if(t)rec2.nightNote=String(t.value||'').trim();
     }
     save();ui.panel=null;render();return;
   }
@@ -2930,7 +3050,48 @@ var I18N_ADD5={
   'p4.hint':'No writing needed in any of the four steps.'
  }
 };
-(function(){for(var _l in I18N_ADD5){if(!I18N[_l])I18N[_l]={};for(var _k in I18N_ADD5[_l])I18N[_l][_k]=I18N_ADD5[_l][_k];}})();
+/* ============ v1.1 新增文案（配乐 / 三看 / 旧书一句 / 夜话时机 / FAQ 两条） ============ */
+var I18N_ADD11={
+ zh:{
+  'set.music':'配乐','set.musiclead':'一段垫着的背景音。放着不管它也行，它不会催你。',
+  'set.musicoff':'静音','set.musicnote':'三首都来自本地配乐库，作为附件跟在文件旁边，不随公开仓库分发。',
+  'music.qinxiao':'琴箫','music.guqin':'古琴','music.stream':'溪流',
+  'br.3':'三看','br.3lead':'一件事，三种读法。不是要你挑对的那个——是让你看见自己平常停在哪一层。',
+  'br.3note':'不用回答。看久了，第二、三层会自己变宽。',
+  'three.e':'遍计所执','three.y':'依他起','three.c':'圆成实',
+  'br.old':'旧书一句',
+  'br.oldlead':'这些是从旧书里抄来的句子。递给你看，不劝你信，也不劝你不信。',
+  'br.oldnote':'它讲的是模式怎么长出来、又怎么松掉——跟信不信教无关。',
+  'slot.what':'今天什么在转','slot.when':'你是什么时候看见的',
+  'slot.w.pre':'当时就看见了','slot.w.during':'过了一会儿才看见',
+  'slot.w.after':'事后才想起来','slot.w.none':'还没看见',
+  'slot.whenhint':'这四个词不是等级，是描述。今天落在哪个，就是哪个。',
+  'faq.13':'里面有佛学和旧书的东西，是要我信教吗？',
+  'faq.13b':'不。软件只是把「旧书里怎么讲」当一种参照递给你看：不做仪轨、不留功课、不算功德，也不劝你信、不劝你不信。不信的人一样能用——它讲的是模式怎么长出来、又怎么松掉，这跟信不信教无关。<br><br>它也不替代医疗与心理治疗。真的撑不住的时候，请找一个人。',
+  'faq.14':'为什么在线版没有配乐？',
+  'faq.14b':'配乐是本地附件（music/ 目录），不随公开仓库分发，所以在线版没有声音，设置里也不会出现那一栏。本地下载的完整版里有顶栏那个「乐」按钮：三首选曲，点一下开始，再点一下停。'
+ },
+ en:{
+  'set.music':'Music','set.musiclead':'A quiet bed of sound. Leave it be; it will not hurry you.',
+  'set.musicoff':'Silence','set.musicnote':'All three come from the local sound library and travel as attachments beside the file. They are not distributed with the public repository.',
+  'music.qinxiao':'Qin and xiao','music.guqin':'Guqin','music.stream':'Stream',
+  'br.3':'Three readings','br.3lead':'One event, three readings. Not to pick the right one \u2014 only to see which layer you usually stop at.',
+  'br.3note':'No answer needed. Stay with it, and the second and third layers widen on their own.',
+  'three.e':'The story','three.y':'The conditions','three.c':'The wider view',
+  'br.old':'A line from an old book',
+  'br.oldlead':'Sentences copied out of old books. Handed to you to look at: not to make you believe, not to make you disbelieve.',
+  'br.oldnote':'They describe how a pattern grows and how it comes loose. Nothing to do with belief.',
+  'slot.what':'What was turning today','slot.when':'When did you see it',
+  'slot.w.pre':'Right as it happened','slot.w.during':'A moment later',
+  'slot.w.after':'Only afterwards','slot.w.none':'Not yet',
+  'slot.whenhint':'These four describe, they do not rank. Wherever it landed today is where it landed.',
+  'faq.13':'There are Buddhist and classical texts in here. Do I have to believe?',
+  'faq.13b':'No. The software hands you old books the way it hands you a reference: no ritual, no homework, no merit counted, no urging you to believe or to disbelieve. Non-believers can use it just as well \u2014 it is about how patterns form and how they loosen, which has nothing to do with faith.<br><br>It is also no substitute for medical or psychological care. When it truly gets too heavy, please find a person.',
+  'faq.14':'Why is there no music online?',
+  'faq.14b':'The music is a local attachment (the music/ folder) and is not distributed with the public repository, so the online version has no sound and the settings entry does not appear. The full local download has the small note button in the top bar: three tracks, one tap to start, one tap to stop.'
+ }
+};
+(function(){var _sets=[I18N_ADD5,I18N_ADD11];for(var _s=0;_s<_sets.length;_s++){var _src=_sets[_s];for(var _l in _src){if(!I18N[_l])I18N[_l]={};for(var _k in _src[_l])I18N[_l][_k]=_src[_l][_k];}}})();
 
 /* 四步各配一个墨符：看见=眼、认下=印、止=石、换一条=路 */
 var P4_GLYPH=['eye','seal','stone','path'];
@@ -3075,6 +3236,92 @@ function brPairHTML(d){
     '</div><div class="dui-note">'+esc(L('br.ask'))+'</div>';
 }
 
+/* ---------- 三看：遍计所执 / 依他起 / 圆成实 ----------
+   来源：9-15《业力深度对话录》。同一件事的三种读法，不是要你选「对的那个」，
+   是让你看见自己平常停在哪一层。纯展示：不记录、不打分、不问。 */
+var THREE_READS=[
+ {e:{zh:'对方没回消息',en:'No reply yet'},
+  m:{zh:'他厌我了。我大概不值得被认真对待。',en:'He is done with me. I am not worth a reply.'},
+  y:{zh:'他可能在忙、手机没电；而我这几天本来就绷着。',en:'He may be busy, or out of battery; and I have been wound tight for days.'},
+  c:{zh:'关系不是一件放得住的东西。念头的浪会过去。',en:'A relationship is not an object you can hold. The wave of thought passes.'}},
+ {e:{zh:'会上话被人打断',en:'Cut off in a meeting'},
+  m:{zh:'他们不尊重我。',en:'They do not respect me.'},
+  y:{zh:'会议赶、话题交叉；我进这间屋子之前就紧张。',en:'The meeting is rushed, threads overlap; I walked in tense already.'},
+  c:{zh:'声音的来去，不说明我是谁。',en:'Voices coming and going say nothing about who I am.'}},
+ {e:{zh:'家人又提起那个老话题',en:'Family raised the same old topic'},
+  m:{zh:'他们永远不懂我。',en:'They will never understand me.'},
+  y:{zh:'他们只会用熟悉的方式靠近人；我也带着几代人的说话方式。',en:'They only know how to come close in the familiar way; and I carry a few generations of speech myself.'},
+  c:{zh:'各自带着几代人的语法在说话，谁都没有恶意。',en:'Each of us speaks in a grammar handed down for generations. No malice in it.'}},
+ {e:{zh:'计划被临时改了',en:'Plans changed at the last minute'},
+  m:{zh:'又一次被轻看了。',en:'Overlooked again.'},
+  y:{zh:'对方也有他的排期和压力；计划本来就不是承诺。',en:'They have their own schedule and pressure; a plan was never a promise.'},
+  c:{zh:'变化是常态，不是判决。',en:'Change is the ordinary state. It is not a verdict.'}},
+ {e:{zh:'朋友的好消息让我心里发紧',en:'A friend\u2019s good news tightened something in me'},
+  m:{zh:'我怎么这么差。',en:'What is wrong with me.'},
+  y:{zh:'我在拿自己的里面，比别人的外面。',en:'I am comparing my inside with their outside.'},
+  c:{zh:'比较是心的一个动作，不是事实。',en:'Comparing is something the mind does. It is not a fact.'}},
+ {e:{zh:'夜里睡不着',en:'Awake in the night'},
+  m:{zh:'明天一定完了。',en:'Tomorrow is ruined.'},
+  y:{zh:'今天喝多了咖啡，有件事还悬着，身体也还没松。',en:'Too much coffee, something still hanging, a body not yet loose.'},
+  c:{zh:'睡不着的时候，不必替明天算账。',en:'Lying awake, you do not have to settle tomorrow\u2019s accounts.'}}
+];
+/* ---------- 旧书一句：唯识引文 + 人话 ----------
+   引文取自《大乘成业论》《成唯识论》与唯识种子说、三类境。
+   递给你看，不劝信也不劝不信——它讲的是模式怎么长出来、又怎么松掉。 */
+var OLD_LINES=[
+ {t:{zh:'意业但以思为自性；身业、语业，依思差别作用而起。',en:'Mental action has intention as its own nature; bodily and verbal action arise from the differentiating function of intention.'},
+  s:{zh:'《大乘成业论》',en:'Karmasiddhiprakarana'},
+  p:{zh:'改业不是只改动作，是先改起心动念。',en:'Changing the pattern is not mainly changing the act; it starts at the impulse.'}},
+ {t:{zh:'如紫矿汁，熏拘橼花，令彼相续功能转变，至结果时，其瓤色赤。',en:'As lac dye perfumes the citron flower, turning its stream of function, so that when the fruit comes its flesh is red.'},
+  s:{zh:'《大乘成业论》',en:'Karmasiddhiprakarana'},
+  p:{zh:'此刻的心念像染料。当时看不出来，遇缘成熟才显色。',en:'The impulse now is a dye. Nothing shows yet; the colour appears when conditions ripen.'}},
+ {t:{zh:'心与无边种，俱相续恒流；遇各别熏缘，心种便增盛。',en:'Mind and its boundless seeds flow on together without pause; met by their own perfuming conditions, the seeds swell.'},
+  s:{zh:'《大乘成业论》',en:'Karmasiddhiprakarana'},
+  p:{zh:'心里藏着无数倾向，一刻不停在流。不是一份静止的档案。',en:'Countless tendencies are stored there, moving without pause. Not a still archive.'}},
+ {t:{zh:'种子待众缘。',en:'Seeds await their conditions.'},
+  s:{zh:'唯识 · 种子六义',en:'Yogacara, six meanings of the seed'},
+  p:{zh:'种子不保证发芽，要等条件。自由的入口就在这个「等」字上。',en:'A seed is not guaranteed to sprout; it waits. That waiting is where freedom gets in.'}},
+ {t:{zh:'业虽经百劫，而终无失坏；遇众缘合时，要当酬彼果。',en:'Though action pass a hundred aeons it is never lost; when conditions gather, its fruit is repaid.'},
+  s:{zh:'《大乘成业论》',en:'Karmasiddhiprakarana'},
+  p:{zh:'不是有个东西在记账，是因果的链条不乱。',en:'Nothing is keeping accounts. The chain of cause simply does not scramble.'}},
+ {t:{zh:'摄藏一切诸法种子故，说名阿赖耶识。',en:'Because it holds the seeds of all dharmas, it is called alaya-vijnana.'},
+  s:{zh:'《成唯识论》',en:'Cheng Weishi Lun'},
+  p:{zh:'它是个仓库，不是上帝，也不是灵魂。',en:'It is a storehouse: not a god, not a soul.'}},
+ {t:{zh:'本新并建。',en:'Both original and acquired seeds hold.'},
+  s:{zh:'唯识 · 种子本有说与新熏说',en:'Yogacara, original and acquired seeds'},
+  p:{zh:'你不是一张白纸，也不是一个死局。带着旧库，也能装新系统。',en:'You are not a blank page, and not a closed case. You can carry the old library and still install something new.'}},
+ {t:{zh:'转舍染污种子所依，转得清净智慧所依。',en:'Turning away from the support of defiled seeds, turning to the support of pure wisdom.'},
+  s:{zh:'《成唯识论》',en:'Cheng Weishi Lun'},
+  p:{zh:'不是删掉旧的你，是换一个立足的地方。',en:'Not deleting the old you: standing somewhere else.'}},
+ {t:{zh:'恒审思量，执阿赖耶为我。',en:'Constantly weighing, it takes the storehouse consciousness as I.'},
+  s:{zh:'唯识 · 末那识',en:'Yogacara, manas'},
+  p:{zh:'把旧模式当成了「这就是我」——争执多半出在这里。',en:'Mistaking an old pattern for this is me. Most quarrels start right there.'}},
+ {t:{zh:'性境、独影境、带质境。',en:'Three objects: actual, imagined, misapprehended.'},
+  s:{zh:'唯识 · 三类境',en:'Yogacara, three kinds of object'},
+  p:{zh:'事是真的；你替它编的意义也是真的；但它们是两件事。',en:'The event is real. The meaning you wove is real too. They are two different things.'}}
+];
+/* ---------- 三看卡：一件事，三种读法并排 ---------- */
+function threeReadCard(){
+  var d=THREE_READS[Math.floor(Math.random()*THREE_READS.length)];
+  var rows=[[L('three.e'),d.m,''],[L('three.y'),d.y,'a'],[L('three.c'),d.c,'']],h='',k;
+  h+='<div class="card"><h2>'+glspan('eye')+esc(L('br.3'))+'</h2>'+
+     '<div class="sub">'+esc(L('br.3lead'))+'</div>'+
+     '<div class="omen"><div class="oh">'+esc(T(d.e))+'</div><div class="track4">';
+  for(k=0;k<rows.length;k++)
+    h+='<div class="tr4 '+rows[k][2]+'"><div class="lb">'+esc(rows[k][0])+'</div><div class="tx">'+esc(T(rows[k][1]))+'</div></div>';
+  return h+'</div></div><div class="qknote" style="margin-top:14px">'+esc(L('br.3note'))+'</div></div>';
+}
+/* ---------- 旧书一句卡：原句 + 出处 + 人话 ---------- */
+function oldLineCard(){
+  var d=OLD_LINES[Math.floor(Math.random()*OLD_LINES.length)];
+  return '<div class="card"><h2>'+glspan('scroll')+esc(L('br.old'))+'</h2>'+
+    '<div class="sub">'+esc(L('br.oldlead'))+'</div>'+
+    '<div class="oldq"><div class="oldqt">「'+esc(T(d.t))+'」</div>'+
+    '<div class="oldqs">'+esc(T(d.s))+'</div>'+
+    '<div class="oldpw">'+esc(T(d.p))+'</div></div>'+
+    '<div class="qknote" style="margin-top:14px">'+esc(L('br.oldnote'))+'</div></div>';
+}
+
 /* ---------- 随览：只递东西，不问你任何问题 ---------- */
 function viewBrowse(){
   var k=ui.brK==null?0:ui.brK,h='';
@@ -3086,8 +3333,12 @@ function viewBrowse(){
        '<div style="margin-top:14px">'+brPairHTML(duiPick(s))+'</div></div>';
   }else if(k===1){
     h+=kbCard();
-  }else{
+  }else if(k===2){
     h+=inkBig();
+  }else if(k===3){
+    h+=threeReadCard();
+  }else{
+    h+=oldLineCard();
   }
   h+='<div class="card brbar"><button class="btn sm" data-act="brNext">'+esc(L('br.again'))+'</button>'+
      '<button class="btn sm ghost" data-act="brKind">'+esc(L('br.kind'))+'</button>'+
