@@ -21,3 +21,10 @@ _edgeprofile/
 
 # 本地测试产物
 XianThreshold.html.v*.bak
+
+# 配乐是本地附件，绝不上传（音频文件任何形态都不入库）
+music/
+*.mp3
+*.m4a
+*.wav
+*.flac
